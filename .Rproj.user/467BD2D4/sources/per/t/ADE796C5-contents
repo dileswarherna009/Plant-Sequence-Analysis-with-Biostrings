@@ -1,0 +1,58 @@
+#load biostrings
+library(Biostrings)
+#add first DNA sequence
+dna_seq <- DNAString("ATGGCCATTGTAATGGGCCGCTGAAAGGGTGCCCGATAG")
+dna_seq
+#sequence length
+length(dna_seq)
+#base composition
+alphabetFrequency(dna_seq)
+#GC content
+gc_count <- letterFrequency(dna_seq, c("G", "C"))
+gc_count
+sum(gc_count)
+#reverse complement
+reverseComplement(dna_seq)
+#save reverse complement
+rev_comp <- reverseComplement(dna_seq)
+rev_comp
+#translate DNA into protein
+protein_seq <- translate(dna_seq)
+protein_seq
+#protein length
+length(protein_seq)
+#amino acid composition 
+alphabetFrequency(protein_seq)
+#second DNA sequence
+dna_seq2 <- DNAString("ATGGCCATTGTAATGGGCCGCTGAAAGGGCGCCCGATAG")
+dna_seq2
+#pairwise alignment
+pwalign::pairwiseAlignment(dna_seq,dna_seq2)
+#create fasta file in notepad 
+#read fasta file
+fasta_data <- readDNAStringSet("plant_sequences.fasta")
+fasta_data
+#sequence names
+names(fasta_data)
+#sequence lengths
+width(fasta_data)
+#extract first sequence
+fasta_data[1]
+#translate all fasta sequences
+protein_data <- translate(fasta_data)
+protein_data
+#save protein sequences
+writeXStringSet(protein_data, "translated_proteins.fasta")
+#name sequence lengths
+seq_lengths <- width(fasta_data)
+seq_lengths
+#GC content of each sequence
+gc_percent <- sapply(fasta_data, function(x) {
+  gc <- sum(letterFrequency(x, c("G", "C")))
+  (gc / length(x)) * 100
+})
+gc_percent
+#summary table
+summary_table <- data.frame(Gene = names(fasta_data), Length = seq_lengths, GC_Content = round(gc_percent, 2))
+summary_table
+write.csv(summary_table,"sequence_summary.csv", row.names = FALSE)
